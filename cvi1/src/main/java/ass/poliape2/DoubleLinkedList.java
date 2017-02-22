@@ -2,6 +2,7 @@ package ass.poliape2;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 
 public class DoubleLinkedList<T> implements CustomList<T> {
@@ -9,12 +10,36 @@ public class DoubleLinkedList<T> implements CustomList<T> {
     private Node last;
     private int count;
 
-    public boolean append(T value) {
-        return false;
+    private void inc(){
+        count++;
+    }
+    private void dec(){
+        if(count > 0){
+            count--;
+        }
     }
 
-    public boolean prepend(T value) {
-        return false;
+    public void append(T value) {
+        if (first == null) {
+            first = last = new Node(value);
+        } else {
+            last.setNext(new Node(value));
+            last.getNext().setPrevious(last);
+            last = last.getNext();
+        }
+        inc();
+    }
+
+    public void prepend(T value) {
+        if (first == null) {
+            first = last = new Node(value);
+        } else {
+            Node newFirst = new Node(value);
+            newFirst.setNext(first);
+            first.setPrevious(newFirst);
+            first = newFirst;
+        }
+        inc();
     }
 
     public T removeFront() {
@@ -24,6 +49,7 @@ public class DoubleLinkedList<T> implements CustomList<T> {
             first.getNext().setPrevious(null);
         }
         first = first.getNext();
+        dec();
         return res;
 
     }
@@ -35,6 +61,7 @@ public class DoubleLinkedList<T> implements CustomList<T> {
             last.getPrevious().setNext(null);
         }
         last = last.getPrevious();
+        dec();
         return res;
     }
 
@@ -43,6 +70,7 @@ public class DoubleLinkedList<T> implements CustomList<T> {
         int given = 0;
         while (current != null) {
             collection.add(current.getValue());
+            current = current.getNext();
             given++;
         }
         return given;
@@ -66,6 +94,9 @@ public class DoubleLinkedList<T> implements CustomList<T> {
         return new CustomIterator(first) {
             @Override
             public T next() {
+                if(!hasNext()){
+                    throw new NoSuchElementException();
+                }
                 current = next;
                 next = next.getNext();
                 return current.getValue();
@@ -138,7 +169,7 @@ public class DoubleLinkedList<T> implements CustomList<T> {
 
         @Override
         public boolean hasNext() {
-            return false;
+            return next != null;
         }
     }
 }

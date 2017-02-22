@@ -7,9 +7,9 @@ import java.util.Iterator;
  * Created by petrp on 02/22/17.
  */
 public interface CustomList<T> {
-    boolean append(T value);
+    void append(T value);
 
-    boolean prepend(T value);
+    void prepend(T value);
 
     T removeFront();
 
@@ -19,7 +19,9 @@ public interface CustomList<T> {
 
     int takeAll(Collection<? super T> collection);
 
-    int count();
+    static int count(Collection<?> collection) {
+        return collection.size();
+    }
 
     Iterator<T> forwardIterator();
 
